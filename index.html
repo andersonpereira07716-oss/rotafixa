@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RotaFixa - Sua Mobilidade Particular</title>
+    <!-- Biblioteca de QR Code -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #030712; color: #f3f4f6; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
+        header { background-color: #0f172a; border-bottom: 1px solid #1e293b; padding: 16px; position: sticky; top: 0; z-index: 20; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .header-content { max-width: 480px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+        .logo-area { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); padding: 8px; border-radius: 12px; color: #34d399; display: flex; align-items: center; justify-content: center; }
+        .logo-title { font-size: 1.25rem; font-weight: 700; color: #fff; }
+        .logo-title span { color: #34d399; }
+        .logo-sub { font-size: 0.75rem; color: #94a3b8; }
+        .btn-icon { background: #1e293b; border: 1px solid #334155; color: #cbd5e1; padding: 8px; border-radius: 10px; cursor: pointer; }
+        
+        main { max-width: 480px; width: 100%; margin: 0 auto; padding: 16px; flex: 1; padding-bottom: 90px; }
+        
+        .card { background: #0f172a; border: 1px solid #1e293b; border-radius: 16px; padding: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); margin-bottom: 16px; }
+        .card-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 16px; color: #e2e8f0; display: flex; align-items: center; gap: 8px; }
+        
+        label { display: block; font-size: 0.75rem; font-weight: 600; color: #94a3b8; margin-bottom: 6px; letter-spacing: 0.05em; }
+        input { width: 100%; background: #020617; border: 1px solid #1e293b; border-radius: 12px; padding: 12px 16px; color: #f8fafc; font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
+        input:focus { border-color: #10b981; }
+        
+        .input-group { position: relative; margin-bottom: 16px; }
+        .input-group span.prefix { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #34d399; font-weight: 700; font-size: 1.25rem; }
+        .input-group input.money { padding-left: 48px; font-size: 1.5rem; font-weight: 700; color: #34d399; }
+
+        .btn-primary { width: 100%; background: linear-gradient(135deg, #10b981, #14b8a6); color: #020617; font-weight: 700; padding: 14px; border-radius: 12px; border: none; cursor: pointer; font-size: 1rem; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); transition: opacity 0.2s; }
+        .btn-primary:active { opacity: 0.9; transform: scale(0.99); }
+
+        .caixa-widget { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(30, 41, 59, 0.7); border-radius: 16px; padding: 16px; display: flex; align-items: center; justify-content: space-between; }
+        .caixa-info { display: flex; align-items: center; gap: 12px; }
+        .caixa-icon { background: rgba(16, 185, 129, 0.1); padding: 10px; border-radius: 12px; color: #34d399; }
+        .caixa-valor { font-size: 1.25rem; font-weight: 700; color: #fff; }
+        
+        .badge { background: #1e293b; color: #cbd5e1; font-size: 0.7rem; padding: 4px 10px; border-radius: 20px; font-weight: 600; display: inline-block; margin-bottom: 4px; }
+        .link-action { background: none; border: none; color: #34d399; font-size: 0.75rem; cursor: pointer; text-align: right; }
+        .link-action:hover { text-decoration: underline; }
+
+        nav { background: #0f172a; border-top: 1px solid #1e293b; position: fixed; bottom: 0; left: 0; right: 0; z-index: 20; }
+        .nav-container { max-width: 480px; margin: 0 auto; display: flex; justify-around; padding: 12px 0; }
+        .nav-btn { background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #64748b; cursor: pointer; font-size: 0.7rem; font-weight: 500; }
+        .nav-btn.active { color: #34d399; }
+
+        .hidden { display: none !important; }
+        
+        .qr-box { background: #fff; padding: 16px; border-radius: 16px; display: inline-block; margin: 12px auto; }
+        #qrcode { display: flex; justify-content: center; align-items: center; }
+
+        .toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: #1e293b; border: 1px solid #334155; color: #f8fafc; font-size: 0.8rem; padding: 10px 16px; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; z-index: 50; }
+        .toast.show { opacity: 1; }
+
+        .historico-item { background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; padding: 14px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+                </div>
+                <div>
+                    <h1 class="logo-title">Rota<span>Fixa</span></h1>
+                    <p class="logo-sub">Sua mobilidade particular</p>
+                </div>
+            </div>
+            <button onclick="mudarAba('config')" class="btn-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main>
+        
+        <!-- View: Nova Corrida -->
+        <div id="view-nova" class="space-y">
+            <div class="card">
+                <h2 class="card-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    Nova Corrida
+                </h2>
+
+                <div class="input-group">
+                    <label>CLIENTE / ROTA (OPCIONAL)</label>
+                    <input type="text" id="input-cliente" placeholder="Ex: Maria / Casa -> Trabalho">
+                </div>
+
+                <div class="input-group">
+                    <label>VALOR FIXO DA CORRIDA (R$)</label>
+                    <span class="prefix">R$</span>
+                    <input type="text" id="input-valor" class="money" placeholder="0,00" inputmode="numeric" oninput="formatarMoeda(this)">
+                </div>
+
+                <button onclick="gerarPagamento()" class="btn-primary">
+                    Gerar Pagamento Pix
+                </button>
+            </div>
+
+            <!-- Caixa do Hoje Widget -->
+            <div class="caixa-widget">
+                <div class="caixa-info">
+                    <div class="caixa-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.75rem; color: #94a3b8; font-weight: 500;">Caixa de Hoje</div>
+                        <div id="resumo-caixa-hoje" class="caixa-valor">R$ 0,00</div>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <span id="resumo-qtd-corridas" class="badge">0 corridas</span>
+                    <button onclick="mudarAba('historico')" class="link-action" style="display: block;">Ver histórico &gt;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- View: Pagamento / Pix -->
+        <div id="view-pagamento" class="hidden">
+            <button onclick="voltarParaNova()" class="link-action" style="margin-bottom: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                &lt; Voltar
+            </button>
+
+            <div class="card" style="text-align: center;">
+                <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #34d399; margin-bottom: 8px;">Aguardando Pagamento</span>
+                <h2 id="pay-valor-display" style="font-size: 2rem; font-weight: 800; color: #fff;">R$ 0,00</h2>
+                <p id="pay-cliente-display" style="font-size: 0.8rem; color: #94a3b8; margin-top: 2px; margin-bottom: 16px;">Cliente: Particular</p>
+
+                <div class="qr-box">
+                    <div id="qrcode"></div>
+                </div>
+
+                <div style="text-align: left; margin-top: 16px;">
+                    <label>PIX COPIA E COLA</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="pix-copia-cola" readonly style="font-size: 0.75rem; background: #020617;">
+                        <button onclick="copiarPix()" style="background: #1e293b; border: 1px solid #334155; color: #34d399; padding: 0 14px; border-radius: 12px; font-weight: 600; font-size: 0.75rem; cursor: pointer; white-space: nowrap;">Copiar</button>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <button onclick="confirmarCorrida()" class="btn-primary">
+                        Confirmar Recebimento & Salvar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- View: Histórico -->
+        <div id="view-historico" class="hidden">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                <h2 class="card-title" style="margin-bottom: 0;">Histórico de Corridas</h2>
+                <button onclick="limparHistorico()" class="link-action" style="color: #f43f5e;">Limpar tudo</button>
+            </div>
+
+            <div id="lista-historico">
+                <!-- Preenchido via JS -->
+            </div>
+        </div>
+
+        <!-- View: Configurações -->
+        <div id="view-config" class="hidden">
+            <h2 class="card-title">Configurações Pix</h2>
+
+            <div class="card">
+                <div class="input-group">
+                    <label>SUA CHAVE PIX</label>
+                    <input type="text" id="cfg-chave">
+                </div>
+                <div class="input-group">
+                    <label>SEU NOME COMPLETO</label>
+                    <input type="text" id="cfg-nome">
+                </div>
+                <div class="input-group">
+                    <label>SUA CIDADE</label>
+                    <input type="text" id="cfg-cidade">
+                </div>
+                <button onclick="salvarConfiguracoes()" class="btn-primary">
+                    Salvar Alterações
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav>
+        <div class="nav-container">
+            <button onclick="mudarAba('nova')" id="nav-btn-nova" class="nav-btn active">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+                <span>Nova</span>
+            </button>
+            <button onclick="mudarAba('historico')" id="nav-btn-historico" class="nav-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                <span>Histórico</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <span id="toast-msg">Ação realizada!</span>
+    </div>
+
+    <!-- Script -->
+    <script>
+        let configPix = {
+            chave: localStorage.getItem('pix_chave') || "090.035.784-35",
+            nome: localStorage.getItem('pix_nome') || "Anderson Pereira Silva",
+            cidade: localStorage.getItem('pix_cidade') || "Patos-PB"
+        };
+
+        let corridaAtual = { valor: 0, cliente: "" };
+
+        document.getElementById('cfg-chave').value = configPix.chave;
+        document.getElementById('cfg-nome').value = configPix.nome;
+        document.getElementById('cfg-cidade').value = configPix.cidade;
+
+        atualizarResumoCaixa();
+
+        function formatarMoeda(input) {
+            let valor = input.value.replace(/\D/g, "");
+            valor = (Number(valor) / 100).toFixed(2) + "";
+            valor = valor.replace(".", ",");
+            valor = valor.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            input.value = valor;
+        }
+
+        function converterParaFloat(valorStr) {
+            if (!valorStr) return 0;
+            return parseFloat(valorStr.replace(/\./g, "").replace(",", ".")) || 0;
+        }
+
+        function mudarAba(aba) {
+            document.getElementById('view-nova').classList.add('hidden');
+            document.getElementById('view-pagamento').classList.add('hidden');
+            document.getElementById('view-historico').classList.add('hidden');
+            document.getElementById('view-config').classList.add('hidden');
+
+            document.getElementById('nav-btn-nova').className = "nav-btn";
+            document.getElementById('nav-btn-historico').className = "nav-btn";
+
+            if (aba === 'nova') {
+                document.getElementById('view-nova').classList.remove('hidden');
+                document.getElementById('nav-btn-nova').className = "nav-btn active";
+                atualizarResumoCaixa();
+            } else if (aba === 'pagamento') {
+                document.getElementById('view-pagamento').classList.remove('hidden');
+            } else if (aba === 'historico') {
+                document.getElementById('view-historico').classList.remove('hidden');
+                carregarHistoricoUI();
+            } else if (aba === 'config') {
+                document.getElementById('view-config').classList.remove('hidden');
+            }
+        }
+
+        function salvarConfiguracoes() {
+            configPix.chave = document.getElementById('cfg-chave').value.trim();
+            configPix.nome = document.getElementById('cfg-nome').value.trim();
+            configPix.cidade = document.getElementById('cfg-cidade').value.trim();
+
+            localStorage.setItem('pix_chave', configPix.chave);
+            localStorage.setItem('pix_nome', configPix.nome);
+            localStorage.setItem('pix_cidade', configPix.cidade);
+
+            mostrarToast("Configurações salvas!");
+            mudarAba('nova');
+        }
+
+        function gerarPagamento() {
+            const inputValorStr = document.getElementById('input-valor').value;
+            const valor = converterParaFloat(inputValorStr);
+            const cliente = document.getElementById('input-cliente').value.trim() || "Particular";
+
+            if (valor <= 0) {
+                mostrarToast("Digite um valor válido!");
+                return;
+            }
+
+            corridaAtual = { valor, cliente };
+
+            document.getElementById('pay-valor-display').innerText = `R$ ${inputValorStr}`;
+            document.getElementById('pay-cliente-display').innerText = `Cliente: ${cliente}`;
+
+            const payloadPix = gerarPayloadPix(configPix.chave, configPix.nome, configPix.cidade, valor);
+            document.getElementById('pix-copia-cola').value = payloadPix;
+
+            document.getElementById('qrcode').innerHTML = "";
+            new QRCode(document.getElementById("qrcode"), {
+                text: payloadPix,
+                width: 190,
+                height: 190,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.M
+            });
+
+            mudarAba('pagamento');
+        }
+
+        function voltarParaNova() {
+            mudarAba('nova');
+        }
+
+        function copiarPix() {
+            const copyText = document.getElementById("pix-copia-cola");
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value);
+            mostrarToast("Pix Copia e Cola copiado!");
+        }
+
+        function confirmarCorrida() {
+            const historico = JSON.parse(localStorage.getItem('rotafixa_historico') || '[]');
+            
+            const novaCorrida = {
+                id: Date.now(),
+                data: new Date().toLocaleDateString('pt-BR'),
+                hora: new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}),
+                cliente: corridaAtual.cliente,
+                valor: corridaAtual.valor
+            };
+
+            historico.unshift(novaCorrida);
+            localStorage.setItem('rotafixa_historico', JSON.stringify(historico));
+
+            document.getElementById('input-valor').value = '';
+            document.getElementById('input-cliente').value = '';
+
+            mostrarToast("Corrida registrada no caixa!");
+            mudarAba('nova');
+        }
+
+        function atualizarResumoCaixa() {
+            const historico = JSON.parse(localStorage.getItem('rotafixa_historico') || '[]');
+            const hojeStr = new Date().toLocaleDateString('pt-BR');
+
+            const corridasHoje = historico.filter(c => c.data === hojeStr);
+            const totalHoje = corridasHoje.reduce((acc, c) => acc + c.valor, 0);
+
+            document.getElementById('resumo-caixa-hoje').innerText = `R$ ${totalHoje.toFixed(2).replace('.', ',')}`;
+            document.getElementById('resumo-qtd-corridas').innerText = `${corridasHoje.length} corrida${corridasHoje.length === 1 ? '' : 's'}`;
+        }
+
+        function carregarHistoricoUI() {
+            const historico = JSON.parse(localStorage.getItem('rotafixa_historico') || '[]');
+            const container = document.getElementById('lista-historico');
+            container.innerHTML = '';
+
+            if (historico.length === 0) {
+                container.innerHTML = `<div class="card" style="text-align: center; color: #64748b; font-size: 0.85rem;">Nenhuma corrida registrada.</div>`;
+                return;
+            }
+
+            historico.forEach(c => {
+                const card = document.createElement('div');
+                card.className = "historico-item";
+                card.innerHTML = `
+                    <div>
+                        <div style="font-weight: 600; font-size: 0.9rem; color: #e2e8f0; margin-bottom: 2px;">${c.cliente}</div>
+                        <div style="font-size: 0.7rem; color: #64748b; margin-bottom: 4px;">${c.data} - ${c.hora}</div>
+                        <div style="font-weight: 700; color: #34d399; font-size: 0.85rem;">R$ ${c.valor.toFixed(2).replace('.', ',')}</div>
+                    </div>
+                    <button onclick="excluirCorrida(${c.id})" style="background: none; border: none; color: #64748b; cursor: pointer; padding: 8px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function excluirCorrida(id) {
+            let historico = JSON.parse(localStorage.getItem('rotafixa_historico') || '[]');
+            historico = historico.filter(c => c.id !== id);
+            localStorage.setItem('rotafixa_historico', JSON.stringify(historico));
+            carregarHistoricoUI();
+            mostrarToast("Removido.");
+        }
+
+        function limparHistorico() {
+            if (confirm("Deseja apagar todo o histórico?")) {
+                localStorage.removeItem('rotafixa_historico');
+                carregarHistoricoUI();
+                atualizarResumoCaixa();
+                mostrarToast("Histórico limpo.");
+            }
+        }
+
+        function mostrarToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 2500);
+        }
+
+        function gerarPayloadPix(chave, nome, cidade, valor) {
+            function formato(id, valorCampo) {
+                const tamanho = String(valorCampo.length).padStart(2, '0');
+                return id + tamanho + valorCampo;
+            }
+
+            const gui = formato("00", "br.gov.bcb.pix");
+            const chaveFormatada = formato("01", chave);
+            const merchantAccountInformation = formato("26", gui + chaveFormatada);
+
+            const merchantCategoryCode = formato("52", "0000");
+            const transactionCurrency = formato("53", "986");
+            const transactionAmount = formato("54", valor.toFixed(2));
+            const countryCode = formato("58", "BR");
+            const merchantName = formato("59", removerAcentos(nome).substring(0, 25));
+            const merchantCity = formato("60", removerAcentos(cidade).substring(0, 15));
+
+            const additionalDataTemplate = formato("62", formato("05", "ROTAFIXA"));
+
+            const payloadSemCRC = 
+                formato("00", "01") +
+                merchantAccountInformation +
+                merchantCategoryCode +
+                transactionCurrency +
+                transactionAmount +
+                countryCode +
+                merchantName +
+                merchantCity +
+                additionalDataTemplate +
+                "6304";
+
+            const crc16 = calcularCRC16(payloadSemCRC);
+            return payloadSemCRC + crc16;
+        }
+
+        function removerAcentos(str) {
+            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+        }
+
+        function calcularCRC16(payload) {
+            let polinomio = 0x1021;
+            let resultado = 0xFFFF;
+            for (let i = 0; i < payload.length; i++) {
+                let c = payload.charCodeAt(i);
+                resultado ^= (c << 8);
+                for (let j = 0; j < 8; j++) {
+                    if ((resultado & 0x8000) !== 0) {
+                        resultado = ((resultado << 1) ^ polinomio);
+                    } else {
+                        resultado = (resultado << 1);
+                    }
+                }
+            }
+            resultado &= 0xFFFF;
+            return resultado.toString(16).toUpperCase().padStart(4, '0');
+        }
+    </script>
+</body>
+</html>
