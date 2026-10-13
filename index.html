@@ -3,9 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RotaFixa - Painel do Motorista & Gestão</title>
+  <title>RotaFixa - Painel Completo de Mobilidade</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Leaflet Maps CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between p-4 font-sans">
   
@@ -33,7 +37,7 @@
         <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-full font-semibold border border-emerald-500/20">
           📍 Patos, PB • Ativo
         </span>
-        <span class="text-[10px] text-slate-400">GPS Conectado</span>
+        <span id="gps-status" class="text-[10px] text-emerald-400 font-medium">GPS Conectado</span>
       </div>
 
       <!-- Botão de Segurança: Compartilhar Rota em Tempo Real -->
@@ -42,7 +46,20 @@
       </button>
     </main>
 
-    <!-- Funcionalidade 1: Calculadora de Tarifa e Combustível -->
+    <!-- Nova Funcionalidade 1: Mapa Interativo GPS (Patos, PB) -->
+    <section class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3">
+      <div class="flex items-center justify-between">
+        <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+          🗺️ Mapa Interativo de Rota
+        </h3>
+        <button onclick="atualizarMinhaPosicao()" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded">
+          📍 Minha Posição
+        </button>
+      </div>
+      <div id="map" class="w-full h-48 rounded-xl border border-slate-800 bg-slate-950 z-0"></div>
+    </section>
+
+    <!-- Funcionalidade Existente: Calculadora de Tarifa e Combustível -->
     <section class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3">
       <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
         🧮 Calculadora de Tarifa & Custo
@@ -66,7 +83,47 @@
       </div>
     </section>
 
-    <!-- Funcionalidade 2: Gerador de Cartão Digital Pix -->
+    <!-- Nova Funcionalidade 2: Agendamento de Corridas Recorrentes -->
+    <section class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3">
+      <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+        📅 Agendamento de Rota Fixa (Passageiros)
+      </h3>
+      <div class="space-y-2 text-xs">
+        <input type="text" id="agend-nome" placeholder="Seu Nome / Passageiro" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-slate-100 focus:border-emerald-500 outline-none">
+        <div class="grid grid-cols-2 gap-2">
+          <input type="text" id="agend-horario" placeholder="Horário (Ex: 07:30)" class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-slate-100 focus:border-emerald-500 outline-none">
+          <input type="text" id="agend-dias" placeholder="Dias (Ex: Seg a Sex)" class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-slate-100 focus:border-emerald-500 outline-none">
+        </div>
+        <button onclick="agendarRotaWhatsApp()" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-semibold text-xs py-2.5 rounded-lg transition-all active:scale-95 flex items-center justify-center gap-1">
+          📲 Solicitar Agendamento via WhatsApp
+        </button>
+      </div>
+    </section>
+
+    <!-- Nova Funcionalidade 3: Diário de Bordo & Lucro Líquido do Motorista -->
+    <section class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3">
+      <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+        📊 Diário de Bordo (Faturamento do Dia)
+      </h3>
+      <div class="grid grid-cols-2 gap-2 text-xs">
+        <div>
+          <label class="text-[10px] text-slate-400 block mb-1">Ganhos (R$)</label>
+          <input type="number" id="diario-ganhos" placeholder="0.00" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-slate-100 focus:border-emerald-500 outline-none">
+        </div>
+        <div>
+          <label class="text-[10px] text-slate-400 block mb-1">Gastos (R$)</label>
+          <input type="number" id="diario-gastos" placeholder="0.00" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-slate-100 focus:border-emerald-500 outline-none">
+        </div>
+      </div>
+      <button onclick="salvarDiarioBordo()" class="w-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold text-xs py-2 rounded-lg transition-all active:scale-95">
+        Salvar Resumo do Dia
+      </button>
+      <div id="resumo-diario" class="text-xs bg-slate-950/80 p-2.5 rounded-lg border border-slate-800 text-center">
+        Lucro Líquido do Dia: <span id="lucro-liquido" class="font-bold text-emerald-400">R$ 0,00</span>
+      </div>
+    </section>
+
+    <!-- Funcionalidade Existente: Cartão Digital & QR Code Pix -->
     <section class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3">
       <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
         💳 Cartão Digital & QR Code Pix
@@ -116,17 +173,79 @@
     © 2026 RotaFixa • Patos, PB
   </footer>
 
-  <!-- Scripts das Novas Funcionalidades -->
+  <!-- Scripts -->
   <script>
-    // Funcionalidade 1: Cálculo de Tarifa e Combustível
+    // Inicialização do Mapa Leaflet focado em Patos - PB
+    let map, userMarker;
+    const patosCoords = [-7.0256, -37.2800];
+
+    function initMap() {
+      map = L.map('map').setView(patosCoords, 14);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+      }).addTo(map);
+
+      userMarker = L.marker(patosCoords).addTo(map)
+        .bindPopup('<b>RotaFixa Patos</b><br>Sua posição atual.')
+        .openPopup();
+    }
+
+    function atualizarMinhaPosicao() {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition((pos) => {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+          const newPos = [lat, lng];
+          map.setView(newPos, 16);
+          userMarker.setLatLng(newPos).bindPopup('Você está aqui!').openPopup();
+        });
+      }
+    }
+
+    // Funcionalidade 2: Agendamento de Rota
+    function agendarRotaWhatsApp() {
+      const nome = document.getElementById('agend-nome').value.trim() || "Passageiro";
+      const horario = document.getElementById('agend-horario').value.trim() || "Horário a combinar";
+      const dias = document.getElementById('agend-dias').value.trim() || "Dias úteis";
+
+      const msg = encodeURIComponent(
+        `Olá! Gostaria de agendar uma Rota Fixa recorrente:\n\n` +
+        `👤 *Nome:* ${nome}\n` +
+        `⏰ *Horário:* ${horario}\n` +
+        `📅 *Dias:* ${dias}\n\n` +
+        `_Enviado via RotaFixa App_`
+      );
+      window.open(`https://wa.me/5583999999999?text=${msg}`, "_blank");
+    }
+
+    // Funcionalidade 3: Diário de Bordo com LocalStorage
+    function salvarDiarioBordo() {
+      const ganhos = parseFloat(document.getElementById('diario-ganhos').value) || 0;
+      const gastos = parseFloat(document.getElementById('diario-gastos').value) || 0;
+      const lucro = ganhos - gastos;
+
+      localStorage.setItem('rf_ganhos', ganhos);
+      localStorage.setItem('rf_gastos', gastos);
+
+      document.getElementById('lucro-liquido').innerText = `R$ ${lucro.toFixed(2).replace('.', ',')}`;
+    }
+
+    function carregarDiarioBordo() {
+      const g = parseFloat(localStorage.getItem('rf_ganhos')) || 0;
+      const d = parseFloat(localStorage.getItem('rf_gastos')) || 0;
+      if (g > 0 || d > 0) {
+        document.getElementById('diario-ganhos').value = g;
+        document.getElementById('diario-gastos').value = d;
+        document.getElementById('lucro-liquido').innerText = `R$ ${(g - d).toFixed(2).replace('.', ',')}`;
+      }
+    }
+
+    // Calculadora de Tarifa
     function calcularTarifa() {
       const km = parseFloat(document.getElementById('calc-km').value) || 0;
       const precoGas = parseFloat(document.getElementById('calc-gas').value) || 0;
-      
-      const consumoMedioKmL = 10; // Média de 10km/L
+      const consumoMedioKmL = 10;
       const custoCombustivel = (km / consumoMedioKmL) * precoGas;
-      
-      // Cálculo: Custo de Combustível + Taxa Fixa de R$ 4,00 + R$ 1,50 por KM
       const tarifaSugerida = custoCombustivel + 4.00 + (km * 1.50);
 
       document.getElementById('res-valor').innerText = `R$ ${tarifaSugerida.toFixed(2).replace('.', ',')}`;
@@ -134,25 +253,16 @@
       document.getElementById('resultado-calc').classList.remove('hidden');
     }
 
-    // Funcionalidade 2: Gerador de Cartão Pix
+    // Gerador Pix
     function gerarCartaoPix() {
       const chave = document.getElementById('pix-chave').value.trim();
       if (!chave) {
-        alert("Por favor, digite uma chave Pix válida!");
+        alert("Digite uma chave Pix válida!");
         return;
       }
       const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(chave)}`;
       document.getElementById('img-qrcode').src = qrUrl;
       document.getElementById('area-qrcode').classList.remove('hidden');
-    }
-
-    // Funcionalidade 3: Registro de Cache para Suporte Offline PWA
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(() => {
-          console.log("Modo offline nativo ativo.");
-        });
-      });
     }
 
     function compartilharRotaSegura(origem = "Patos - PB", destino = "Destino Selecionado") {
@@ -184,6 +294,11 @@
     function toggleHistorico() {
       alert("Histórico de corridas e relatórios sincronizados!");
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initMap();
+      carregarDiarioBordo();
+    });
   </script>
 </body>
 </html>
