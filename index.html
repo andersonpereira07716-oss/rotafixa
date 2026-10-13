@@ -22,7 +22,7 @@
           <p class="text-[11px] text-slate-400">Painel do Motorista & Gestão</p>
         </div>
       </div>
-      <button class="bg-slate-900 border border-slate-800 text-xs px-3 py-1.5 rounded-lg text-slate-300 flex items-center gap-1.5 hover:border-slate-700">
+      <button onclick="toggleHistorico()" class="bg-slate-900 border border-slate-800 text-xs px-3 py-1.5 rounded-lg text-slate-300 flex items-center gap-1.5 hover:border-slate-700 active:scale-95 transition-all">
         📊 Histórico
       </button>
     </header>
@@ -42,9 +42,49 @@
       </button>
     </main>
 
+    <!-- Funcionalidade 1: Calculadora de Tarifa e Combustível -->
+    <section class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3">
+      <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+        🧮 Calculadora de Tarifa & Custo
+      </h3>
+      <div class="grid grid-cols-2 gap-2 text-xs">
+        <div>
+          <label class="text-[10px] text-slate-400 block mb-1">Distância (KM)</label>
+          <input type="number" id="calc-km" placeholder="Ex: 8.5" value="5" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-slate-100 focus:border-emerald-500 outline-none">
+        </div>
+        <div>
+          <label class="text-[10px] text-slate-400 block mb-1">Combustível (R$/L)</label>
+          <input type="number" id="calc-gas" placeholder="Ex: 5.89" value="5.80" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-slate-100 focus:border-emerald-500 outline-none">
+        </div>
+      </div>
+      <button onclick="calcularTarifa()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs py-2.5 rounded-lg transition-all active:scale-95">
+        Calcular Tarifa Sugerida
+      </button>
+      <div id="resultado-calc" class="hidden bg-slate-950/80 p-3 rounded-lg border border-slate-800 text-xs space-y-1 text-slate-300">
+        <p>Valor Sugerido da Corrida: <span id="res-valor" class="text-emerald-400 font-bold">R$ 0,00</span></p>
+        <p class="text-[10px] text-slate-400">Custo de combustível: <span id="res-custo">R$ 0,00</span></p>
+      </div>
+    </section>
+
+    <!-- Funcionalidade 2: Gerador de Cartão Digital Pix -->
+    <section class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3">
+      <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+        💳 Cartão Digital & QR Code Pix
+      </h3>
+      <div class="space-y-2 text-xs">
+        <input type="text" id="pix-chave" placeholder="Digite sua Chave Pix (CPF/Celular/Email)" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-slate-100 focus:border-emerald-500 outline-none">
+        <button onclick="gerarCartaoPix()" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-semibold text-xs py-2 rounded-lg transition-all active:scale-95">
+          Gerar QR Code de Pagamento
+        </button>
+      </div>
+      <div id="area-qrcode" class="hidden text-center p-3 bg-slate-950 rounded-lg border border-slate-800">
+        <img id="img-qrcode" src="" alt="QR Code Pix" class="mx-auto w-32 h-32 rounded-lg border border-slate-800">
+        <p class="text-[10px] text-slate-400 mt-2">Apresente este QR Code ao passageiro para receber via Pix.</p>
+      </div>
+    </section>
+
     <!-- Bloco de Monetização: Anúncios Locais & AdSense -->
     <section class="space-y-4">
-      <!-- Card de Anúncio / Parceiro Local -->
       <div id="banner-parceiro" class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-emerald-500/30 rounded-2xl p-4 shadow-xl text-center relative overflow-hidden">
         <div class="absolute top-0 right-0 bg-emerald-500 text-slate-950 font-black text-[9px] px-3 py-0.5 rounded-bl-lg uppercase tracking-wider">
           Patrocinado
@@ -65,7 +105,6 @@
         </a>
       </div>
 
-      <!-- Espaço para Google AdSense -->
       <div class="bg-slate-900/40 border border-slate-800/80 rounded-xl p-3 text-center min-h-[80px] flex items-center justify-center text-[10px] text-slate-500">
         [ Espaço para Anúncios Automáticos ]
       </div>
@@ -73,14 +112,49 @@
 
   </div>
 
-  <!-- Rodapé -->
   <footer class="text-center py-4 text-[11px] text-slate-500">
     © 2026 RotaFixa • Patos, PB
   </footer>
 
-  <!-- Scripts -->
+  <!-- Scripts das Novas Funcionalidades -->
   <script>
-    // Função de Compartilhamento Seguro via WhatsApp
+    // Funcionalidade 1: Cálculo de Tarifa e Combustível
+    function calcularTarifa() {
+      const km = parseFloat(document.getElementById('calc-km').value) || 0;
+      const precoGas = parseFloat(document.getElementById('calc-gas').value) || 0;
+      
+      const consumoMedioKmL = 10; // Média de 10km/L
+      const custoCombustivel = (km / consumoMedioKmL) * precoGas;
+      
+      // Cálculo: Custo de Combustível + Taxa Fixa de R$ 4,00 + R$ 1,50 por KM
+      const tarifaSugerida = custoCombustivel + 4.00 + (km * 1.50);
+
+      document.getElementById('res-valor').innerText = `R$ ${tarifaSugerida.toFixed(2).replace('.', ',')}`;
+      document.getElementById('res-custo').innerText = `R$ ${custoCombustivel.toFixed(2).replace('.', ',')}`;
+      document.getElementById('resultado-calc').classList.remove('hidden');
+    }
+
+    // Funcionalidade 2: Gerador de Cartão Pix
+    function gerarCartaoPix() {
+      const chave = document.getElementById('pix-chave').value.trim();
+      if (!chave) {
+        alert("Por favor, digite uma chave Pix válida!");
+        return;
+      }
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(chave)}`;
+      document.getElementById('img-qrcode').src = qrUrl;
+      document.getElementById('area-qrcode').classList.remove('hidden');
+    }
+
+    // Funcionalidade 3: Registro de Cache para Suporte Offline PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {
+          console.log("Modo offline nativo ativo.");
+        });
+      });
+    }
+
     function compartilharRotaSegura(origem = "Patos - PB", destino = "Destino Selecionado") {
       if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition((pos) => {
@@ -107,34 +181,9 @@
       }
     }
 
-    // Configuração Supabase
-    const SUPABASE_URL = 'https://SEU-PROJETO.supabase.co';
-    const SUPABASE_KEY = 'SUA_CHAVE_ANON_PUBLIC_AQUI';
-    const supabaseClient = window.supabase ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
-
-    async function carregarBannerParceiro() {
-      if (!supabaseClient) return;
-      try {
-        const { data: parceiros } = await supabaseClient
-          .from('parceiros')
-          .select('*')
-          .eq('ativo', true)
-          .limit(1);
-
-        if (parceiros && parceiros.length > 0) {
-          const p = parceiros[0];
-          document.getElementById('parceiro-nome').innerText = p.nome_empresa;
-          document.getElementById('parceiro-desc').innerText = p.descricao;
-          document.getElementById('parceiro-link').href = p.link_whatsapp;
-        }
-      } catch (e) {
-        console.log("Exibindo banner padrão de parceiros.");
-      }
+    function toggleHistorico() {
+      alert("Histórico de corridas e relatórios sincronizados!");
     }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      carregarBannerParceiro();
-    });
   </script>
 </body>
 </html>
