@@ -3,31 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RotaFixa - Mobilidade Urbana em Patos</title>
+    <title>RotaFixa - Mobilidade Urbana com Tarifa Fixa em Patos - PB</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #020617;
+            color: #f8fafc;
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+    </style>
 </head>
-<body class="bg-slate-950 text-white min-h-screen flex flex-col justify-between items-center p-6">
-    <header class="w-full max-w-md text-center py-4">
-        <h1 class="text-3xl font-extrabold tracking-wider text-red-500">ROTAFIXA</h1>
-        <p class="text-xs text-slate-400 mt-1">Mobilidade urbana com tarifa fixa em Patos - PB</p>
-    </header>
-    <main class="w-full max-w-md flex flex-col items-center justify-center my-auto space-y-6">
-        <div class="w-52 h-52 rounded-3xl overflow-hidden shadow-2xl border-2 border-red-500/40 bg-slate-900 flex items-center justify-center p-2">
-            <img src="splash.jpg" alt="Logótipo RotaFixa" class="w-full h-full object-cover rounded-2xl">
+<body class="min-h-screen flex flex-col justify-between items-center p-6 md:p-10">
+
+    <header class="w-full max-w-7xl flex items-center justify-between py-4 border-b border-slate-800/50 mb-10">
+        <div class="flex items-center gap-3">
+            <img src="logomarca.png" alt="Miniatura RotaFixa" class="w-10 h-10 rounded-full border border-red-500/30 object-cover">
+            <h1 class="text-3xl font-extrabold tracking-tight text-white">ROTA<span class="text-red-600">FIXA</span></h1>
         </div>
-        <div class="text-center space-y-2">
-            <h2 class="text-2xl font-bold">Sua viagem garantida</h2>
-            <p class="text-sm text-slate-400 px-4">Conectando passageiros a motoristas particulares e mototáxis com pagamentos via Pix.</p>
+        <div class="flex items-center gap-2">
+            <span class="text-xs text-slate-400">Patos - PB</span>
+            <div class="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
+        </div>
+    </header>
+
+    <main class="w-full max-w-7xl flex flex-col md:flex-row items-center justify-center gap-12 my-auto">
+        <div class="w-full md:w-1/2 flex items-center justify-center">
+            <div class="relative group">
+                <div class="absolute -inset-1.5 bg-gradient-to-r from-red-800 to-slate-900 rounded-full blur opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                <div class="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden shadow-2xl border-4 border-red-600/50 bg-slate-900 flex items-center justify-center p-3">
+                    <img src="logomarca.png" alt="Logomarca RotaFixa" class="w-full h-full object-cover rounded-full">
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full md:w-1/2 text-center md:text-left space-y-6">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-white leading-tight">
+                Sua viagem em Patos, <br/>com <span class="text-red-500">preço fixo</span> e segurança.
+            </h2>
+            <p class="text-lg text-slate-300 max-w-xl mx-auto md:mx-0">
+                Conectamos você aos melhores motoristas e mototáxis da região. Pague com facilidade via Pix e tenha a certeza do valor antes de embarcar.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row items-center gap-4 pt-4">
+                <a href="#solicitar" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white text-center py-4 px-10 rounded-xl font-bold transition shadow-lg shadow-red-600/30 text-lg">
+                    Solicitar Viagem
+                </a>
+                <a href="https://wa.me/5583998765554" target="_blank" class="w-full sm:w-auto flex items-center justify-center gap-2 border border-slate-700 hover:bg-slate-800 text-slate-200 py-4 px-8 rounded-xl font-medium transition text-lg">
+                    Chamar no WhatsApp
+                </a>
+            </div>
         </div>
     </main>
-    <footer class="w-full max-w-md space-y-3 pb-4">
-        <a href="https://wa.me/5583998765554" target="_blank" class="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white text-center py-3.5 rounded-xl font-semibold transition shadow-lg shadow-green-600/30">
-            Chamar no WhatsApp
-        </a>
-        <a href="https://instagram.com/anderson_ps1" target="_blank" class="w-full block bg-slate-800 hover:bg-slate-700 text-slate-300 text-center py-3 rounded-xl font-medium transition border border-slate-700">
-            Instagram @anderson_ps1
-        </a>
-        <p class="text-center text-xs text-slate-500 pt-2">© 2026 RotaFixa - Anderson Pereira Silva</p>
+
+    <footer class="w-full max-w-7xl border-t border-slate-800/50 mt-16 pt-8 pb-4 text-center">
+        <p class="text-sm text-slate-500">
+            © 2026 RotaFixa Patos - Anderson Pereira Silva. Plataforma de mobilidade urbana com integração Pix.
+        </p>
+        <p class="text-xs text-slate-600 mt-1">Todos os direitos reservados.</p>
     </footer>
+
 </body>
 </html>
