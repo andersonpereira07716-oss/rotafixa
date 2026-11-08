@@ -1,62 +1,97 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RotaFixa - Mobilidade Urbana com Tarifa Fixa em Patos - PB</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            background-color: #020617;
-            color: #f8fafc;
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RotaFixa - Mobilidade Inteligente em Patos, PB</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #050814;
+      color: #ffffff;
+    }
+
+    .glow-box {
+      box-shadow: 0 0 25px rgba(239, 68, 68, 0.35);
+      border: 2px solid rgba(239, 68, 68, 0.5);
+    }
+
+    .glow-box:hover {
+      box-shadow: 0 0 35px rgba(239, 68, 68, 0.55);
+    }
+
+    .text-glow {
+      text-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+    }
+  </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between items-center p-6 md:p-10">
+<body class="min-h-screen flex flex-col justify-between items-center px-4 py-6">
 
-    <header class="w-full max-w-7xl flex items-center justify-between py-4 border-b border-slate-800/50 mb-6">
-        <div class="flex items-center gap-3">
-            <img src="splash.jpg" alt="RotaFixa" class="w-10 h-10 rounded-full border border-red-500/40 object-cover">
-            <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white">ROTA<span class="text-red-600">FIXA</span></h1>
-        </div>
-        <div class="flex items-center gap-2">
-            <span class="text-xs text-slate-400">Patos - PB</span>
-            <div class="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
-        </div>
-    </header>
+  <!-- Header / Topo -->
+  <header class="w-full max-w-md flex justify-between items-center py-2 mb-6 border-b border-gray-800">
+    <div class="flex items-center space-x-3">
+      <img src="logo.jpg" alt="RotaFixa Logo" class="w-10 h-10 rounded-full border border-red-500/50 object-cover">
+      <span class="text-xl font-extrabold tracking-wider">ROTA<span class="text-red-500">FIXA</span></span>
+    </div>
+    <div class="flex items-center space-x-2 text-xs text-gray-400">
+      <span>Patos - PB</span>
+      <span class="w-2.5 h-2.5 bg-red-600 rounded-full animate-pulse"></span>
+    </div>
+  </header>
 
-    <main class="w-full max-w-7xl flex flex-col md:flex-row items-center justify-center gap-8 my-auto">
-        <div class="w-full md:w-1/2 flex items-center justify-center">
-            <div class="relative group">
-                <div class="absolute -inset-1.5 bg-gradient-to-r from-red-800 to-slate-900 rounded-3xl blur opacity-50"></div>
-                <div class="relative w-64 h-64 md:w-80 md:h-80 rounded-3xl overflow-hidden shadow-2xl border-4 border-red-600/50 bg-slate-900 flex items-center justify-center">
-                    <img src="splash.jpg" alt="Logomarca RotaFixa" class="w-full h-full object-cover">
-                </div>
-            </div>
-        </div>
+  <!-- Conteúdo Principal -->
+  <main class="w-full max-w-md flex flex-col items-center text-center space-y-6">
 
-        <div class="w-full md:w-1/2 text-center md:text-left space-y-6">
-            <h2 class="text-3xl md:text-5xl font-extrabold text-white leading-tight">
-                Sua viagem em Patos, <br/>com <span class="text-red-500">preço fixo</span> e segurança.
-            </h2>
-            <p class="text-base md:text-lg text-slate-300 max-w-xl mx-auto md:mx-0">
-                Conectamos você aos melhores motoristas e mototáxis da região. Pague com facilidade via Pix e tenha a certeza do valor antes de embarcar.
-            </p>
-            
-            <div class="flex flex-col sm:flex-row items-center gap-4 pt-2">
-                <a href="https://wa.me/5583998765554" target="_blank" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white text-center py-4 px-10 rounded-xl font-bold transition shadow-lg shadow-red-600/30 text-lg">
-                    Chamar no WhatsApp
-                </a>
-            </div>
-        </div>
-    </main>
+    <!-- Card da Imagem / Logo Principal -->
+    <div class="w-full aspect-square rounded-3xl overflow-hidden glow-box transition-all duration-300 bg-black flex items-center justify-center">
+      <img src="logo.jpg" alt="Logomarca RotaFixa" class="w-full h-full object-cover">
+    </div>
 
-    <footer class="w-full max-w-7xl border-t border-slate-800/50 mt-12 pt-6 pb-4 text-center">
-        <p class="text-sm text-slate-500">
-            © 2026 RotaFixa Patos - Anderson Pereira Silva.
-        </p>
-    </footer>
+    <!-- Título e Subtítulo -->
+    <div class="space-y-3">
+      <h1 class="text-2xl sm:text-3xl font-extrabold leading-tight">
+        Sua viagem em Patos,<br>
+        com <span class="text-red-500 text-glow">preço fixo</span> e segurança.
+      </h1>
+      <p class="text-sm text-gray-400 px-2 leading-relaxed">
+        Conectamos você aos melhores motoristas e mototáxis da região. Pague com facilidade via Pix e tenha a certeza do valor antes de embarcar.
+      </p>
+    </div>
+
+    <!-- Botão de Ação -->
+    <a href="https://wa.me/5583998765554?text=Olá!%20Gostaria%20de%20solicitar%20uma%20viagem%20pelo%20RotaFixa." 
+       target="_blank" 
+       rel="noopener noreferrer"
+       class="w-full py-4 bg-red-600 hover:bg-red-700 active:scale-95 text-white font-bold text-lg rounded-2xl shadow-lg shadow-red-600/40 transition-all flex items-center justify-center space-x-3">
+      <i class="fa-brands fa-whatsapp text-2xl"></i>
+      <span>Chamar no WhatsApp</span>
+    </a>
+
+  </main>
+
+  <!-- Rodapé / Recursos -->
+  <footer class="w-full max-w-md mt-8 pt-4 border-t border-gray-900 grid grid-cols-4 gap-2 text-center text-[10px] text-gray-400">
+    <div class="flex flex-col items-center space-y-1">
+      <i class="fa-solid fa-car text-xs text-red-500"></i>
+      <span>PESSOAS EM MOVIMENTO</span>
+    </div>
+    <div class="flex flex-col items-center space-y-1">
+      <i class="fa-solid fa-location-dot text-xs text-red-500"></i>
+      <span>CIDADES MAIS CONECTADAS</span>
+    </div>
+    <div class="flex flex-col items-center space-y-1">
+      <i class="fa-solid fa-shield-halved text-xs text-red-500"></i>
+      <span>VIAGENS MAIS SEGURAS</span>
+    </div>
+    <div class="flex flex-col items-center space-y-1">
+      <i class="fa-solid fa-mobile-screen-button text-xs text-red-500"></i>
+      <span>TECNOLOGIA A SEU FAVOR</span>
+    </div>
+  </footer>
 
 </body>
 </html>
